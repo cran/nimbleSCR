@@ -1,0 +1,17 @@
+086fdc3f3963f3dc0b3f6ae50bf9fa03 *DESCRIPTION
+f305fadd7e053c4bd36c7a2f9e3b95d1 *NAMESPACE
+a6503a9d38dcccae02d6b58593afcc19 *R/dDispersal_exp.R
+55134242d54fdfdf3bee1619bb8953aa *R/dHabitatMask.R
+d8c29c6f16a9ad3f4fdbcfda22e301b8 *R/dbinom_sparseLocalSCR.R
+fcd20f309628b80caca54f172662659d *R/dbinom_vector.R
+e68187b944c02c00a4b9c5bae879a9f5 *R/getLocalTraps.R
+ad0973b701d1526b0458c90a1079806f *R/getSparseY.R
+6797add71a75fdb26e6b3a027c5b9676 *R/localTrapCalculations.R
+d05159725013d5707870d72b2fccf699 *R/zzz.R
+e928a2d8d753c3513bcba30b24a9020a *man/dDispersal_exp.Rd
+2c0aecf8eeca7ab23f3a7213a22bb96e *man/dHabitatMask.Rd
+0d78bc2d6053ea0519a350eabb96ba6c *man/dbinom_sparseLocalSCR.Rd
+0111d6a55deedae23f50216d030279d1 *man/dbinom_vector.Rd
+3e3a1de8dd315845205b159fb850be90 *man/getLocalTraps.Rd
+829e55c28db2c60cb74c42593285d3bf *man/getSparseY.Rd
+b4f55f7e5791a9a95bfc5a6ecd32436e *man/localTrapCalculations.Rd
