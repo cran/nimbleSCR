@@ -27,7 +27,7 @@ This function returns a list of objects:
 \description{
 R utility function to scale x- and y- coordinates to the habitat grid.
 Scaling the coordinates to the habitat grid allows implementation of the fast look-up approach to identify the habitat grid cell in which a point is located. 
-This technique was first applied by Mike Meredith in SCR (\href{https://mmeredith.net/blog/1309_SECR_in_JAGS_patchy_habitat.htm}{https://mmeredith.net/blog/1309_SECR_in_JAGS_patchy_habitat.htm}).
+This technique was first applied by Mike Meredith in SCR (\href{https://mmeredith.net/blog/2013/1309_SECR_in_JAGS_patchy_habitat.htm}{https://mmeredith.net/blog/2013/1309_SECR_in_JAGS_patchy_habitat.htm}).
 Re-scaling the entire coordinate system of the data input is a requirement to run SCR models with the local evaluation approach. 
 This function requires square grid cells and coordinates using projection with units in meters or km (e.g., UTM but not latitude/longitude)
 }
@@ -36,12 +36,12 @@ coordsGridCenter <- expand.grid(list(x = seq(50.5, 100, 1),
                                     y = seq(100.5, 150, 1)))
 coordsData <- expand.grid(list(x = seq(60, 90, 1),
                              y = seq(110, 140, 1)))
-plot(coordsGridCenter[,1]~coordsGridCenter[,2])
-points(coordsData[,1]~coordsData[,2], col="red")
+plot(coordsGridCenter[,2]~coordsGridCenter[,1])
+points(coordsData[,2]~coordsData[,1], col="red")
 scaled <- scaleCoordsToHabitatGrid(coordsData = coordsData
                                   , coordsHabitatGridCenter = coordsGridCenter)
-plot(scaled$coordsHabitatGridCenterScaled[,1]~scaled$coordsHabitatGridCenterScaled[,2])
-points(scaled$coordsDataScaled[,1]~scaled$coordsDataScaled[,2], col="red")
+plot(scaled$coordsHabitatGridCenterScaled[,2]~scaled$coordsHabitatGridCenterScaled[,1])
+points(scaled$coordsDataScaled[,2]~scaled$coordsDataScaled[,1], col="red")
 
 }
 \author{
