@@ -1,9 +1,12 @@
 .onAttach <- function(libname, pkgname) {
     
-    packageStartupMessage("Warning message:\n'getLocalTraps' and 'dbinom_sparseLocalSCR' are deprecated.\nUse 'getLocalObjects' and 'dbinomLocal_normal' instead.")
+    ## removing this warning for next release
+    ## -DT Sept 2021
+    ##packageStartupMessage("Warning message:\n'getLocalTraps' and 'dbinom_sparseLocalSCR' are deprecated.\nUse 'getLocalObjects' and 'dbinomLocal_normal' instead.")
     
     suppressMessages({
-
+ 
+        # dDispersal_exp
         registerDistributions(
             list(
                 dDispersal_exp = list(
@@ -16,7 +19,7 @@
             ),
             verbose = FALSE)
 
-
+        # dHabitatMask
         registerDistributions(
             list(
                 dHabitatMask = list(
@@ -29,6 +32,7 @@
             ),
             verbose = FALSE)
 
+        # dbinom_sparseLocalSCR
         registerDistributions(
             list(
                 dbinom_sparseLocalSCR = list(
@@ -41,6 +45,7 @@
             ),
             verbose = FALSE)
         
+        # dbinomLocal_normal
         registerDistributions(
             list(
                 dbinomLocal_normal = list(
@@ -77,6 +82,7 @@
             ),
             verbose = F)
         
+        # dpoisLocal_normal
         registerDistributions(
             list(
                 dpoisLocal_normal = list(
@@ -112,7 +118,8 @@
                 )
             ),
             verbose = F)
-
+        
+        # dbinom_vector
         registerDistributions(
             list(
                 dbinom_vector = list(
@@ -124,6 +131,175 @@
                 )
             ),
             verbose = FALSE)
-
+        
+        # dbernppAC
+        registerDistributions(
+            list(
+                dbernppAC = list(
+                    BUGSdist = "dbernppAC(lowerCoords, upperCoords, logIntensities, logSumIntensity, habitatGrid, numGridRows, numGridCols)",
+                    types = c("value = double(1)", "lowerCoords = double(2)", "upperCoords = double(2)", "logIntensities = double(1)", 
+                              "logSumIntensity = double(0)", "habitatGrid = double(2)", "numGridRows = double(0)", "numGridCols = double(0)"),
+                    
+                    discrete = TRUE,
+                    mixedSizes = TRUE,
+                    pqAvail = FALSE
+                )
+            ),
+            verbose = FALSE)
+        
+        # dbernppACmovement_normal
+        registerDistributions(
+            list(
+            dbernppACmovement_normal= list(
+                BUGSdist = "dbernppACmovement_normal (lowerCoords, upperCoords, s, sd, baseIntensities, habitatGrid,
+                                                      numGridRows, numGridCols, numWindows)",
+                types = c("value = double(1)", "lowerCoords = double(2)", "upperCoords = double(2)",
+                          "s = double(1)", "sd = double(0)", "baseIntensities = double(1)",
+                          "habitatGrid = double(2)", "numGridRows = double(0)", "numGridCols = double(0)", "numWindows = double(0)" ),
+                pqAvail = FALSE,
+                mixedSizes = TRUE
+            )
+          ),
+        verbose = FALSE)
+        
+        
+        # dbernppACmovement_exp
+        registerDistributions(
+            list(
+                dbernppACmovement_exp= list(
+                    BUGSdist = "dbernppACmovement_exp (lowerCoords, upperCoords, s, lambda, baseIntensities, habitatGrid,
+                                                      numGridRows, numGridCols, numWindows)",
+                    types = c("value = double(1)", "lowerCoords = double(2)", "upperCoords = double(2)",
+                              "s = double(1)", "lambda = double(0)", "baseIntensities = double(1)",
+                              "habitatGrid = double(2)", "numGridRows = double(0)", "numGridCols = double(0)", "numWindows = double(0)" ),
+                    pqAvail = FALSE,
+                    mixedSizes = TRUE
+                )
+            ),
+            verbose = FALSE)
+        
+        # dbernppDetection_normal
+        registerDistributions(
+            list(
+                dbernppDetection_normal = list(
+                    BUGSdist = "dbernppDetection_normal(lowerCoords, upperCoords, s, sd, baseIntensities,  numWindows, indicator)",
+                    types = c("value = double(1)", "lowerCoords = double(2)", "upperCoords = double(2)",
+                              "s = double(1)", "sd = double(0)", "baseIntensities = double(1)",
+                              "numWindows = double(0)", "indicator = double(0)"),
+                    pqAvail = FALSE,
+                    mixedSizes = TRUE)
+            ),
+            verbose = FALSE)
+        
+        # dbernppLocalACmovement_normal
+        registerDistributions(
+            list(
+                dbernppLocalACmovement_normal = list(
+                    BUGSdist = "dbernppLocalACmovement_normal(lowerCoords, upperCoords, s, sd, baseIntensities, habitatGrid, habitatGridLocal,
+                                                               resizeFactor, localHabWindowIndices, numLocalHabWindows, numGridRows, numGridCols, numWindows)",
+                    types = c("value = double(1)", "lowerCoords = double(2)", "upperCoords = double(2)",
+                              "s = double(1)", "sd = double(0)", "baseIntensities = double(1)",
+                              "habitatGrid = double(2)", "habitatGridLocal = double(2)",
+                              "resizeFactor = double(0)","localHabWindowIndices  = double(2)", "numLocalHabWindows = double(1)",
+                              "numGridRows = double(0)", "numGridCols = double(0)", "numWindows = double(0)" ),
+                    pqAvail = FALSE,
+                    mixedSizes = TRUE
+                )
+            ),
+            verbose = FALSE)
+        
+        # dbernppLocalACmovement_exp
+        registerDistributions(
+            list(
+                dbernppLocalACmovement_exp = list(
+                    BUGSdist = "dbernppLocalACmovement_exp(lowerCoords, upperCoords, s, lambda, baseIntensities, habitatGrid, habitatGridLocal,
+                                                               resizeFactor, localHabWindowIndices, numLocalHabWindows, numGridRows, numGridCols, numWindows)",
+                    types = c("value = double(1)", "lowerCoords = double(2)", "upperCoords = double(2)",
+                              "s = double(1)", "lambda = double(0)", "baseIntensities = double(1)",
+                              "habitatGrid = double(2)", "habitatGridLocal = double(2)",
+                              "resizeFactor = double(0)","localHabWindowIndices  = double(2)", "numLocalHabWindows = double(1)",
+                              "numGridRows = double(0)", "numGridCols = double(0)", "numWindows = double(0)" ),
+                    pqAvail = FALSE,
+                    mixedSizes = TRUE
+                )
+            ),
+            verbose = FALSE)
+        # dbernppLocalDetection_normal
+        registerDistributions(
+            list(
+                dbernppLocalDetection_normal = list(
+                    BUGSdist = "dbernppLocalDetection_normal(lowerCoords, upperCoords, s, sd, baseIntensities, 
+                                 habitatGridLocal, resizeFactor, localObsWindowIndices, numLocalObsWindows,  numWindows, indicator)",
+                    types = c("value = double(1)", "lowerCoords = double(2)", "upperCoords = double(2)",
+                              "s = double(1)", "sd = double(0)", "baseIntensities = double(1)", 
+                              "habitatGridLocal = double(2)", "resizeFactor = double(0)",
+                              "localObsWindowIndices = double(2)", "numLocalObsWindows = double(1)", 
+                              "numWindows = double(0)",
+                              "indicator = double(0)"),
+                    pqAvail = FALSE,
+                    mixedSizes = TRUE)
+            ),
+            verbose = FALSE)
+        
+       
+        # dnormalizer
+        registerDistributions(
+            list(
+                dnormalizer = list(
+                    BUGSdist = "dnormalizer(logNormConstant)",
+                    types = c("value = double(0)", "logNormConstant = double(0)"),
+                    pqAvail = FALSE
+                )
+            ),
+            verbose = FALSE)
+        
+        # dpoisppAC
+        registerDistributions(
+            list(
+                dpoisppAC = list(
+                    BUGSdist = "dpoisppAC(lowerCoords, upperCoords, logIntensities, sumIntensity, habitatGrid, numGridRows, numGridCols, numPoints)",
+                    types = c("value = double(2)", "lowerCoords = double(2)", "upperCoords = double(2)", "logIntensities = double(1)", 
+                              "sumIntensity = double(0)", "habitatGrid = double(2)", "numGridRows = double(0)", "numGridCols = double(0)", "numPoints = double(0)"),
+                    pqAvail = FALSE,
+                    mixedSizes = TRUE
+                )
+            ),
+            verbose = FALSE)
+        
+        
+        # dpoisppDetection_normal
+        registerDistributions(
+            list(
+                dpoisppDetection_normal = list(
+                    BUGSdist = "dpoisppDetection_normal(lowerCoords, upperCoords, s, sd, baseIntensities, 
+                                numMaxPoints, numWindows, indicator)",
+                    types = c("value = double(2)", 
+                              "lowerCoords = double(2)", "upperCoords = double(2)",
+                              "s = double(1)", "sd = double(0)", "baseIntensities = double(1)",
+                              "numMaxPoints = double(0)",
+                              "numWindows = double(0)", "indicator = double(0)"),
+                    pqAvail = FALSE,
+                    mixedSizes = TRUE)
+            ),
+            verbose = FALSE)
+        
+        # dpoisppLocalDetection_normal
+        registerDistributions(
+            list(
+                dpoisppLocalDetection_normal = list(
+                    BUGSdist = "dpoisppLocalDetection_normal(lowerCoords, upperCoords, s, sd, baseIntensities, 
+                                 habitatGridLocal, resizeFactor, localObsWindowIndices, numLocalObsWindows, numMaxPoints, numWindows, indicator)",
+                    types = c("value = double(2)", "lowerCoords = double(2)", "upperCoords = double(2)",
+                              "s = double(1)", "sd = double(0)", "baseIntensities = double(1)",  
+                              "habitatGridLocal = double(2)", "resizeFactor = double(0)",
+                              "localObsWindowIndices = double(2)", "numLocalObsWindows = double(1)", 
+                              "numMaxPoints = double(0)", "numWindows = double(0)",
+                              "indicator = double(0)"),
+                    pqAvail = FALSE,
+                    mixedSizes = TRUE)
+            ),
+            verbose = FALSE)
+        
+        
     })
 }

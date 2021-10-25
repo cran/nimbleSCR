@@ -12,7 +12,7 @@
 
 <meta name="author" content="Cyril Milleret" />
 
-<meta name="date" content="2021-07-01" />
+<meta name="date" content="2021-10-25" />
 
 <title>Using nimbleSCR to simulate and fit Bayesian SCR models</title>
 
@@ -163,7 +163,7 @@ div.csl-indent {
 
 <h1 class="title toc-ignore">Using nimbleSCR to simulate and fit Bayesian SCR models</h1>
 <h4 class="author">Cyril Milleret</h4>
-<h4 class="date">2021-07-01</h4>
+<h4 class="date">2021-10-25</h4>
 
 
 
@@ -310,7 +310,7 @@ div.csl-indent {
 </div>
 <div id="simualte-scr-data-from-the-nimble-model" class="section level3">
 <h3>1.7 Simualte SCR data from the NIMBLE model</h3>
-<p>We first need to obtain the list of nodes that will be simuated. We used the ‘getDependencies’ function from NIMBLE. Using the ‘simulate’ function from NIMBLE, we will then simulate the activity center (AC) locations (‘sxy’), the state of the individual (‘z’) and SCR observation data (‘y’) given the values we provided for ‘p0,’ ‘sigma’ and ‘psi.’</p>
+<p>We first need to obtain the list of nodes that will be simulated. We used the ‘getDependencies’ function from NIMBLE. Using the ‘simulate’ function from NIMBLE, we will then simulate the activity center (AC) locations (‘sxy’), the state of the individual (‘z’) and SCR observation data (‘y’) given the values we provided for ‘p0,’ ‘sigma’ and ‘psi.’</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># FIRST WE GET THE NODES TO SIMULATE</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>nodesToSim <span class="ot">&lt;-</span> model<span class="sc">$</span><span class="fu">getDependencies</span>(<span class="fu">c</span>(<span class="st">&quot;sxy&quot;</span>, <span class="st">&quot;z&quot;</span>), <span class="at">self=</span>T)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># THEN WE SIMULATE THOSE NODES </span></span>
@@ -371,7 +371,7 @@ div.csl-indent {
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reflective =</span> <span class="cn">TRUE</span>),</span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">thin =</span> <span class="dv">1</span>)</span></code></pre></div>
 <pre><code>## ===== Monitors =====
-## thin = 1: N, sigma, p0, psi
+## thin = 1: N, p0, psi, sigma
 ## ===== Samplers =====
 ## binary sampler (200)
 ##   - z[]  (200 elements)
@@ -539,7 +539,7 @@ div.csl-indent {
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">control =</span> <span class="fu">list</span>(<span class="at">reflective =</span> <span class="cn">TRUE</span>),</span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">thin =</span> <span class="dv">1</span>)</span></code></pre></div>
 <pre><code>## ===== Monitors =====
-## thin = 1: N, sigma, p0, psi, betaTraps
+## thin = 1: N, betaTraps, p0, psi, sigma
 ## ===== Samplers =====
 ## binary sampler (200)
 ##   - z[]  (200 elements)
