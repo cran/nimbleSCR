@@ -10,16 +10,15 @@
 #' 
 #' @name dbernppAC 
 #' 
-#' @param x Vector of x- and y-coordinates of a single spatial point (i.e. AC location).
+#' @param x Vector of x- and y-coordinates of a single spatial point (i.e. AC location) scaled to the habitat (see (\code{\link{scaleCoordsToHabitatGrid}}).
 #' @param n Integer specifying the number of realisations to generate.  Only n = 1 is supported.
-#' @param lowerCoords,upperCoords Matrices of lower and upper x- and y-coordinates of all habitat windows. One row for each window. 
-#' Each window should be of size 1x1 (after rescaling if necessary).
+#' @param lowerCoords,upperCoords Matrices of lower and upper x- and y-coordinates of all habitat windows scaled to the habitat (see (\code{\link{scaleCoordsToHabitatGrid}}). One row for each window. 
+#' Each window should be of size 1x1.
 #' @param logIntensities Vector of log habitat intensities for all habitat windows. 
 #' @param logSumIntensity Log of the sum of habitat intensities over all windows.
-#' @param habitatGrid Matrix of habitat window indices. Only needed for \code{dbernppAC}. 
-#' Habitat window indices should match the order in \code{lowerCoords}, \code{upperCoords}, and \code{logIntensities}. 
-#' When the grid has only one row/column, artificial indices have to be provided to inflate \code{habitatGrid} in order 
-#' to be able to use the distribution in \code{nimble} model code.
+#' @param habitatGrid Matrix of habitat window indices. Cell values should correspond to the order of habitat windows in
+#' \code{lowerCoords}, \code{upperCoords}, and \code{logIntensities}. 
+#' When the habitat grid only consists of a single row or column of windows, an additional row or column of dummy indices has to be added because the \code{nimble} model code requires a matrix.
 #' @param numGridRows,numGridCols Numbers of rows and columns of the habitat grid.
 #' @param log Logical argument, specifying whether to return the log-probability of the distribution.
 #' 

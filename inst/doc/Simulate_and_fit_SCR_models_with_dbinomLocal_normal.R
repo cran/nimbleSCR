@@ -1,5 +1,20 @@
 ## ----setup, include=FALSE-----------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.width = 8, fig.height = 10) 
+
+## ----echo = FALSE-------------------------------------------------------------
+## So it works for everyone
+if(Sys.info()['user'] == 'dturek') {
+  baseDir <- '~/github/nimble/nimbleSCR/'                   ## Daniel
+} else if(Sys.info()['user'] == 'pidu') {
+  baseDir <- 'C:/Users/pidu/PACKAGES/nimbleSCR/'            ## Pierre
+} else if(Sys.info()['user'] == 'cymi') {
+  baseDir <- 'C:/Personal_Cloud/OneDrive/Work/nimbleSCR/'   ## Cyril
+} else if(Sys.info()['user'] == 'arichbi') {
+  baseDir <- 'C:/PROJECTS/nimbleSCR/'                       ## Richard
+} else if(Sys.info()['user'] == 'admin') {                  ## Soumen
+  baseDir <- '~/GitHubSD/nimbleSCR/' 
+} else baseDir <- NULL
 
 ## ---- warning = FALSE, message = FALSE----------------------------------------
 # LOAD PACKAGES
@@ -40,7 +55,6 @@ habitatMask <- matrix(1, nrow = 12, ncol= 12, byrow = TRUE)
 trapLocal <- getLocalObjects(habitatMask = habitatMask,
                              coords = ScaledtrapCoords,
                              dmax = 7,
-                             resizeFactor = 1,
                              plot.check = FALSE
 )
 
@@ -72,7 +86,6 @@ modelCode <- nimbleCode({
                                                  trapCoords = trapCoords[1:n.traps,1:2],
                                                  localTrapsIndices = trapIndex[1:n.cells,1:maxNBDets],
                                                  localTrapsNum = nTraps[1:n.cells],
-                                                 resizeFactor = ResizeFactor,
                                                  habitatGrid = habitatIDDet[1:y.maxDet,1:x.maxDet],
                                                  indicator = z[i],
                                                  lengthYCombined = lengthYCombined)
@@ -100,7 +113,6 @@ nimConstants <- list(M = M,
                      x.max = dim(habitatMask)[2],
                      y.maxDet = dim(trapLocal$habitatGrid)[1],
                      x.maxDet = dim(trapLocal$habitatGrid)[2],
-                     ResizeFactor = trapLocal$resizeFactor,
                      n.cells = dim(trapLocal$localIndices)[1],
                      maxNBDets = trapLocal$numLocalIndicesMax,
                      trapIndex = trapLocal$localIndices,
@@ -163,7 +175,6 @@ legend(x = -1, y = 13,
        col=c("black", "red", "orange", "blue"),
        bty = 'n')
 
-
 ## ---- warning = FALSE, message = FALSE----------------------------------------
 nimData1 <- nimData
 nimData1$y <- model$y
@@ -178,9 +189,14 @@ model <- nimbleModel( code = modelCode,
                       inits = nimInits1,
                       check = F,
                       calculate = F)
+
 model$calculate()
-cmodel <- compileNimble(model)
-cmodel$calculate()
+
+## ----eval = FALSE-------------------------------------------------------------
+#  cmodel <- compileNimble(model)
+#  cmodel$calculate()
+
+## -----------------------------------------------------------------------------
 MCMCconf <- configureMCMC(model = model,
                           monitors = c("N", "sigma", "p0","psi"),
                           control = list(reflective = TRUE),
@@ -197,15 +213,34 @@ for(node in ACnodes) {
 }
 
 MCMC <- buildMCMC(MCMCconf)
-cMCMC <- compileNimble(MCMC, project = model, resetFunctions = TRUE)
-# RUN THE MCMC 
-MCMCRuntime <- system.time(myNimbleOutput <- runMCMC( mcmc = cMCMC,
-                                                             nburnin = 1000,
-                                                             niter = 5000,
-                                                             nchains = 3,
-                                                             samplesAsCodaMCMC = TRUE))
-#plot check 
-chainsPlot(myNimbleOutput)
+
+## ----eval = FALSE-------------------------------------------------------------
+#  cMCMC <- compileNimble(MCMC, project = model)
+#  
+#  niter <- 5000
+#  nburnin <- 1000
+#  nchains <- 3
+#  
+#  # RUN THE MCMC
+#  MCMCRuntime <- system.time(myNimbleOutput <- runMCMC( mcmc = cMCMC,
+#                                                               niter = niter,
+#                                                               nburnin = nburnin,
+#                                                               nchains = nchains,
+#                                                               samplesAsCodaMCMC = TRUE))
+
+## ----eval = FALSE, echo = FALSE-----------------------------------------------
+#  save(myNimbleOutput, niter, nburnin, nchains, MCMCRuntime,
+#       file = file.path(baseDir,"nimbleSCR/inst/extdata/simulate_and_fit_SCR_models_samples.RData"))
+
+## ----echo = FALSE-------------------------------------------------------------
+if(is.null(baseDir)) {
+    load(system.file("extdata", "simulate_and_fit_SCR_models_samples.RData", package = "nimbleSCR"))
+} else {
+    load(file.path(baseDir,"nimbleSCR/inst/extdata/simulate_and_fit_SCR_models_samples.RData"))
+}
+
+## -----------------------------------------------------------------------------
+chainsPlot(myNimbleOutput, line = c(N, p0, N/M, sigma))
 
 ## ---- warning = FALSE, message = FALSE----------------------------------------
 set.seed(1)
@@ -253,7 +288,6 @@ modelCodeTrap <- nimbleCode({
                                                   trapCoords = trapCoords[1:n.traps,1:2],
                                                   localTrapsIndices = trapIndex[1:n.cells,1:maxNBDets],
                                                   localTrapsNum = nTraps[1:n.cells],
-                                                  resizeFactor = ResizeFactor,
                                                   habitatGrid = habitatIDDet[1:y.maxDet,1:x.maxDet],
                                                   indicator = z[i],
                                                   lengthYCombined = lengthYCombined)
@@ -304,16 +338,12 @@ legend(x = -1, y = 13,
        col=c("black", "red", "orange", "blue"),
        bty = 'n')
 
-
-
-
 ## ---- warning = FALSE, message = FALSE----------------------------------------
 nimData1 <- nimData
 nimData1$y <- model$y
 nimInits1 <- nimInits
 nimInits1$z <- model$z
 nimInits1$sxy <- model$sxy
-
 
 # CREATE AND COMPILE THE NIMBLE MODEL
 model <- nimbleModel( code = modelCodeTrap,
@@ -323,10 +353,14 @@ model <- nimbleModel( code = modelCodeTrap,
                       check = F,
                       calculate = F)
 model$calculate()
-cmodel <- compileNimble(model)
-cmodel$calculate()
+
+## ----eval = FALSE-------------------------------------------------------------
+#  cmodel <- compileNimble(model)
+#  cmodel$calculate()
+
+## -----------------------------------------------------------------------------
 MCMCconf <- configureMCMC(model = model,
-                          monitors = c("N", "sigma", "p0","psi","betaTraps"),
+                          monitors = c("N", "sigma", "p0","psi", "betaTraps"),
                           control = list(reflective = TRUE),
                           thin = 1)
 
@@ -341,13 +375,28 @@ for(node in ACnodes) {
 }
 
 MCMC <- buildMCMC(MCMCconf)
-cMCMC <- compileNimble(MCMC, project = model, resetFunctions = TRUE)
-# RUN THE MCMC 
-MCMCRuntime <- system.time(myNimbleOutput <- runMCMC( mcmc = cMCMC,
-                                                             nburnin = 1000,
-                                                             niter = 5000,
-                                                             nchains = 3,
-                                                             samplesAsCodaMCMC = TRUE))
-#plot check 
-chainsPlot(myNimbleOutput)
+
+## ----eval = FALSE-------------------------------------------------------------
+#  cMCMC <- compileNimble(MCMC, project = model, resetFunctions = TRUE)
+#  
+#  # RUN THE MCMC
+#  MCMCRuntime <- system.time(myNimbleOutput <- runMCMC( mcmc = cMCMC,
+#                                                               niter = niter,
+#                                                               nburnin = nburnin,
+#                                                               nchains = nchains,
+#                                                               samplesAsCodaMCMC = TRUE))
+
+## ----eval = FALSE, echo = FALSE-----------------------------------------------
+#  save(myNimbleOutput, MCMCRuntime,
+#       file = file.path(baseDir,"nimbleSCR/inst/extdata/simulate_and_fit_SCR_models_samples2.RData"))
+
+## ----echo = FALSE-------------------------------------------------------------
+if(is.null(baseDir)) {
+    load(system.file("extdata", "simulate_and_fit_SCR_models_samples2.RData", package = "nimbleSCR"))
+} else {
+    load(file.path(baseDir,"nimbleSCR/inst/extdata/simulate_and_fit_SCR_models_samples2.RData"))
+}
+
+## -----------------------------------------------------------------------------
+chainsPlot(myNimbleOutput, line = c(N, nimInits$betaTraps, p0, N/M, sigma))
 

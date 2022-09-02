@@ -14,6 +14,8 @@ if(Sys.info()['user'] == 'dturek') {
   baseDir <- 'C:/Personal_Cloud/OneDrive/Work/nimbleSCR/'   ## Cyril
 } else if(Sys.info()['user'] == 'arichbi') {
   baseDir <- 'C:/PROJECTS/nimbleSCR/'                       ## Richard
+} else if(Sys.info()['user'] == 'admin') {                  ## Soumen
+  baseDir <- '~/GitHubSD/nimbleSCR/' 
 } else baseDir <- NULL
 
 if(is.null(baseDir)) {
@@ -242,20 +244,22 @@ model <- nimbleModel( code = modelCode,
                       inits = nimInits1,
                       check = F,
                       calculate = F)
-cmodel <- compileNimble(model)
+
 ## Check the initial log-likelihood 
-cmodel$calculate()
+model$calculate()
+
+## ----eval = FALSE-------------------------------------------------------------
+#  cmodel <- compileNimble(model)
 
 ## ---- warning = FALSE, message = FALSE----------------------------------------
 MCMCconf <- configureMCMC(model = model,
                           monitors  = c("N","sigma","psi","detCoeffInt",
                                         "detCoeffSlope","habCoeffSlope"),
                           control = list(reflective = TRUE),
-                          thin = 1)
+                          thin = 10)
 MCMC <- buildMCMC(MCMCconf)
 
-## ----eval = F-----------------------------------------------------------------
-#  
+## ----eval = FALSE-------------------------------------------------------------
 #  cMCMC <- compileNimble(MCMC, project = model, resetFunctions = TRUE)
 #  
 #  ## Run MCMC
@@ -264,11 +268,9 @@ MCMC <- buildMCMC(MCMCconf)
 #                                                        niter = 10000,
 #                                                        nchains = 3,
 #                                                        samplesAsCodaMCMC = TRUE))
-#  
 
-## ----eval = F, echo = FALSE---------------------------------------------------
+## ----eval = FALSE, echo = FALSE-----------------------------------------------
 #  save(samples, MCMCRuntime, file = file.path(baseDir,"nimbleSCR/inst/extdata/pointProcess_samples.RData"))
-#  #file.path("C:/Personal_Cloud/OneDrive/Work/nimbleSCR/nimbleSCR/inst/extdata","pointProcess_samples.RData"))
 
 ## ----echo = FALSE-------------------------------------------------------------
 if(is.null(baseDir)) {
@@ -278,12 +280,11 @@ if(is.null(baseDir)) {
 }
 
 ## ---- warning = FALSE, message = FALSE----------------------------------------
-
 ## Print runtime
 MCMCRuntime
 
 ## Traceplots and density plots for the tracked parameters
-chainsPlot(samples)
+chainsPlot(samples, line = c(N, detCoeffInt, detCoeffSlope, habCoeffSlope, N/M, sigma))
 
 ## ---- warning = FALSE, message = FALSE----------------------------------------
 modelCodeSemiCompleteLikelihood <- nimbleCode({
@@ -362,7 +363,7 @@ modelCodeSemiCompleteLikelihood <- nimbleCode({
   ## does not matter. It makes it possible to use the general dpoippDetection_normal function
   ## when either data augmentation or the SCDL is employed
   logDetProb <- log(probDetection)
-  normData ~ dnormalizer(logNormConstant = -M * logDetProb)
+  normData ~ dnormalizer(logNormConstant = -nDetected * logDetProb)
 })
 
 ## ---- warning = FALSE, message = FALSE----------------------------------------
@@ -396,7 +397,7 @@ nimData1$quadWeights <- nodesRes$quadWeights
 nimData1$numNodes <- rep(nNodes,dim(nimData1$lowerHabCoords)[1])
 nimConstants$nNodes <- dim(nodesRes$quadNodes)[1]
 
-## ---- eval = T, warning = FALSE, message = FALSE------------------------------
+## ---- eval = TRUE, warning = FALSE, message = FALSE---------------------------
 model <- nimbleModel(code = modelCodeSemiCompleteLikelihood,
                      constants = nimConstants,
                      data = nimData1,
@@ -405,18 +406,20 @@ model <- nimbleModel(code = modelCodeSemiCompleteLikelihood,
                      calculate = F)
 
 model$calculate()
-cmodel <- compileNimble(model)
-cmodel$calculate()
 
+## ----eval = FALSE-------------------------------------------------------------
+#  cmodel <- compileNimble(model)
+#  cmodel$calculate()
 
+## -----------------------------------------------------------------------------
 MCMCconf <- configureMCMC(model = model,
                           monitors =  c("N","sigma","probDetection","habCoeffInt", "detCoeffInt","detCoeffSlope","habCoeffSlope"),
                           control = list(reflective = TRUE),
-                          thin = 1)
+                          thin = 10)
 
 MCMC <- buildMCMC(MCMCconf)
 
-## ---- eval = F, warning = FALSE, message = FALSE------------------------------
+## ---- eval = FALSE, warning = FALSE, message = FALSE--------------------------
 #  cMCMC <- compileNimble(MCMC, project = model, resetFunctions = TRUE)
 #  
 #  ## Run MCMC
@@ -425,12 +428,11 @@ MCMC <- buildMCMC(MCMCconf)
 #                                                       niter = 10000,
 #                                                       nchains = 3,
 #                                                       samplesAsCodaMCMC = TRUE))
-#  
 
-## ----eval = F, echo = FALSE---------------------------------------------------
+## ----eval = FALSE, echo = FALSE-----------------------------------------------
 #  save(samples1, MCMCRuntime1, file = file.path(baseDir,"nimbleSCR/inst/extdata/pointProcess_samples1.RData"))
 
-## ----echo = F-----------------------------------------------------------------
+## ----echo = FALSE-------------------------------------------------------------
 if(is.null(baseDir)) {
     load(system.file("extdata", "pointProcess_samples1.RData", package = "nimbleSCR"))
 } else {
@@ -438,9 +440,8 @@ if(is.null(baseDir)) {
 }
 
 ## ---- warning = FALSE, message = FALSE----------------------------------------
-
 MCMCRuntime1
 
 ## Plot check
-chainsPlot(samples1)
+chainsPlot(samples1, line = c(N, detCoeffInt, detCoeffSlope, NA, habCoeffSlope, NA, sigma))
 
